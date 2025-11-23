@@ -37,7 +37,7 @@ function snackbar(title, icon) {
 const createCards = arr => {
     let result = arr.map(post => {
         return `
-         <div class="col-md-3" id=${post.id}>
+         <div class="col-md-3" id="${post.id}">
                 <div class="card mb-5">
                     <div class="card-header">
                         <h3>${post.title}<h3>
@@ -56,47 +56,6 @@ const createCards = arr => {
     postContainer.innerHTML = result;
 };
 
-function onremove(ele) {
-
-    Swal.fire({
-        title: "Do you want to Remove the post?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Remove it!"
-
-    }).then((result) => {
-        if (result.isConfirmed) {
-
-            let remove_id = ele.closest(".col-md-3").id;
-
-            const DELETE_URL = `${POST_URL}/${remove_id}`;
-
-            let xhr = new XMLHttpRequest();
-
-            xhr.open("DELETE", DELETE_URL);
-
-            xhr.onload = function () {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    let res = xhr.response;
-                    cl(res);
-
-                    ele.closest(".col-md-3").remove();
-                    snackbar(`The post of id=(${remove_id}) deleted successfully`, "success");
-
-                } else {
-                    snackbar(`Something went wrong while deleting post`, "error");
-                }
-            };
-
-
-
-            xhr.send(null);
-        }
-    });
-
-}
 
 
 
@@ -206,7 +165,7 @@ const onPostSubmit = (eve) => {
             ////API CALL FAIL
             snackbar('Failed to create post', 'error');
         }
-        //loader.classList.add('d-none')
+        loader.classList.add('d-none')
 
     }
 
@@ -215,7 +174,7 @@ const onPostSubmit = (eve) => {
 }
 
 function onEdit(ele) {
-
+    loader.classList.remove('d-none');
     let card = ele.closest(".col-md-3");
 
     let EDIT_ID = ele.closest(".col-md-3").id;
@@ -254,9 +213,56 @@ function onEdit(ele) {
 
         } else {
             snackbar('Something went wrong !!!', 'error')
+
         }
+        loader.classList.add('d-none');
     }
-    xhr.send(null)
+    xhr.send()
+
+}
+
+
+function onremove(ele) {
+
+    Swal.fire({
+        title: "Do you want to Remove the post?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Remove it!"
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            loader.classList.remove('d-none');
+            let remove_id = ele.closest(".col-md-3").id;
+
+            const DELETE_URL = `${POST_URL}/${remove_id}`;
+
+            let xhr = new XMLHttpRequest();
+
+            xhr.open("DELETE", DELETE_URL);
+
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    let res = xhr.response;
+                    cl(res);
+
+                    ele.closest(".col-md-3").remove();
+                    snackbar(`The post of id=(${remove_id}) deleted successfully`, "success");
+
+                } else {
+                    snackbar(`Something went wrong while deleting post`, "error");
+                }
+                loader.classList.add('d-none');
+            };
+
+
+
+            xhr.send(null);
+        }
+    });
 
 }
 
@@ -285,6 +291,8 @@ function onPostUpdate() {
     let xhr = new XMLHttpRequest()
 
     xhr.open("PATCH", UPDATED_URL)
+    xhr.setRequestHeader("Content-Type", "application/json");
+
 
     xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300) {
