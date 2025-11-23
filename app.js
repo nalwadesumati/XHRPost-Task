@@ -18,13 +18,13 @@ POST_URL = `${BASE_URL}/posts`
 
 
 
-function toggelSpineer(flag) {
-    if (flag === true) {
-        loader.classList.remove('d-none')
-    } else {
-        loader.classList.add('d-none')
-    }
-}
+// function toggelSpineer(flag) {
+//     if (flag === true) {
+//         loader.classList.remove('d-none')
+//     } else {
+//         loader.classList.add('d-none')
+//     }
+// }
 function snackbar(title, icon) {
     Swal.fire({
         title: title,
@@ -329,3 +329,4 @@ toggelSpineer()
 
 updatePostBtn.addEventListener("click", onPostUpdate)
 postForm.addEventListener("submit", onPostSubmit)
+
